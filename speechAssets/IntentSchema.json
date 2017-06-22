@@ -1,0 +1,7 @@
+{	"intents": [
+	{ "intent": "NewGameIntent" },
+	{ "intent": "AMAZON.HelpIntent" },
+	{ "intent": "AMAZON.StopIntent" },
+	{ "intent": "AMAZON.NextIntent" }	
+	
+	]}

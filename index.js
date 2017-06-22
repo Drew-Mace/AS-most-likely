@@ -1,17 +1,14 @@
+/*jslint node: true */
+'use strict';
 var Alexa = require('alexa-sdk');
- 
-exports.handler = function(event, context, callback){
-    var alexa = Alexa.handler(event, context, callback);
-};
-
 var APP_ID = "amzn1.ask.skill.087c1849-609e-46ba-a5cd-8366fe17c8ba";
 
-var SKILL_NAME = "Most Likely"
-var GAME_LENGTH = data.lenth;
-var GET_GAME_MESSAGE = "Welcome to the game of Most Likely. The rules are simple, I will ask a question, then everyone will point to the person they think is most likely to commit the act. That person has to drink."
-var HELP_MESSAGE = "You can say pause to pause the game, or next for a new question."
-var HELP_REPROMPT = "What can I help you with?"
-var STOP_MESSAGE = "Thank you for playing. Please remember to drink responsibly!"
+var SKILL_NAME = "Most Likely";
+var GAME_MESSAGE = "Welcome to the game of Most Likely. The rules are simple, I will ask a question, then everyone will point to the person they think is most likely to commit the act. That person has to drink.";
+var HELP_MESSAGE = "Just ask me to open Most Likely.";
+var HELP_REPROMPT = "What can I help you with?";
+var CANCEL_MESSAGE = "Oh, I guess you don't want to play.";
+var STOP_MESSAGE = "Thank you for playing. Please remember to drink responsibly!";
 
 var data = [
 	"Most likely to accidentally kill someone?",
@@ -350,45 +347,42 @@ var data = [
 	"Most likely to write a bestselling book?"
 ];
 
-//=========================================================================
 
-exports.handler = function(event, context, callback) {
-    var alexa = Alexa.handler(event, context);
-    alexa.APP_ID = APP_ID;
-    alexa.registerHandlers(handlers);
-    alexa.execute();
+//=========================================================================
+var handlers = {
+	"LaunchRequest": function () {
+		this.emit("NewGameIntent", true);
+	},
+	"NewGameIntent": function () {
+		var gameArr = data,
+			gameIndex = Math.floor(Math.random() * gameArr.length),
+			randomGame = gameArr[gameIndex],
+			speechOutput = randomGame;
+		this.emit(":tell", speechOutput);
+	},
+	"AMAZON.HelpIntent": function () {
+		var reprompt = HELP_REPROMPT,
+			speechOutput = HELP_MESSAGE;
+		this.emit(":ask", speechOutput, reprompt);
+	},
+	"AMAZON.NextIntent": function () {
+		var gameArr = data,
+			gameIndex = Math.floor(Math.random() * gameArr.length),
+			nextQuestion = gameArr[gameIndex],
+			speechOutput = nextQuestion;
+		this.emit(":tell", speechOutput);
+	},
+	"AMAZON.StopIntent": function () {
+		this.emit(":tell", STOP_MESSAGE);
+	},
+	"AMAZON.CancelIntent": function () {
+		this.emit(":tell", CANCEL_MESSAGE);
+	}
 };
 
-var handlers = {
-	'LaunchRequest': function () {
-		this.emit('GetNewGameIntent');
-	},
-	'NextQuestion': function () {
-		var gameArr = data;
-		var gameIndex = Math.floor(Math.random() * gameArr.length);
-		var nextQuestion = gameArr[gameIndex];
-		var speechOutput = nextQuestion;
-		this.emit(':tellWithCard', speechOutput)
-	},
-	'GetNewGameIntent': function () {
-		var gameArr = data;
-		var gameIndex = Math.floor(Math.random() * gameArr.length);
-		var randomGame = gameArr[gameIndex];
-		var speechOutput = GET_GAME_MESSAGE + randomGame;
-		this.emit(':tellWithCard', speechOutput, SKILL_NAME, randomGame)
-	},
-	'AMAZON.HelpIntent': function () {
-		var speechOutput = HELP_MESSAGE;
-		var reprompt = HELP_REPROMPT;
-		this.emit(':ask', speechOutput, reprompt);
-	},
-	'AMAZON.CancelIntent': function () {
-		this.emit(':tell', STOP_MESSAGE);
-	},
-	'AMAZON.NextIntent': function () {
-		this.emit(':tell', NextQuestion)
-	},
-	'AMAZON.StopIntent': function () {
-		this.emit(':tell', STOP_MESSAGE);
-	}
-}
+exports.handler = function (event, context, callback) {
+	var alexa = Alexa.handler(event, context);
+	alexa.APP_ID = APP_ID;
+	alexa.registerHandlers(handlers);
+	alexa.execute();
+};
