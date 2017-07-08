@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/Drew-Mace/AS-most-likely#readme",
   "dependencies": {
-    "alexa-sdk": "^1.0.10"
+    "alexa-sdk": "^1.0.10",
+    "universal-analytics": "^0.4.13"
   }
 }

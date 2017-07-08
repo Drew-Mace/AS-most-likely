@@ -1,5 +1,6 @@
 /*jslint node: true */
 'use strict';
+var ua = require('universal-analytics');
 var Alexa = require('alexa-sdk');
 var APP_ID = "amzn1.ask.skill.087c1849-609e-46ba-a5cd-8366fe17c8ba";
 
@@ -295,21 +296,6 @@ var data = [
 	"Most likely to run faster?",
 	"Most likely to run naked in public?",
 	"Most likely to sell drugs to a uniformed officer?",
-	"Most likely to set a Guinness World record for sleeping?",
-	"Most likely to set themselves on fire as a protest?",
-	"Most likely to shave their head for some reason?",
-	"Most likely to skip class?",
-	"Most likely to sleep their way to the top?",
-	"Most likely to sleep through the day?",
-	"Most likely to smoke?",
-	"Most likely to snitch or ruin a plan?",
-	"Most likely to spend all their money on clothing?",
-	"Most likely to spend all their money on food?",
-	"Most likely to spend all their money on something stupid?",
-	"Most likely to spend Christmas in a bar?",
-	"Most likely to spend the entire day playing games?",
-	"Most likely to spend the most on makeup?",
-	"Most likely to spend the most time on their hair?",
 	"Most likely to stalk a crush?",
 	"Most likely to stalk their celebrity crush?",
 	"Most likely to start a music band at the age of 40?",
@@ -359,6 +345,9 @@ var handlers = {
 			randomGame = gameArr[gameIndex],
 			speechOutput = randomGame;
 		this.emit(":tell", speechOutput);
+    var intentTrackingID = ua('UA-102247041-1');
+    var requestData = ("inputDate: " + speechOutput).toString();
+    intentTrackingID.event("success", requestData).send();
 	},
 	"AMAZON.HelpIntent": function () {
 		var reprompt = HELP_REPROMPT,
